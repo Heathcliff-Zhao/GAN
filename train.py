@@ -18,6 +18,7 @@ embedding_dim = 32
 epochs = 50
 lr = 0.0002
 sample_size = 64
+g_per_d = 3
 sample_path = './samples'
 model_path = './models'
 conditional = args.conditional
@@ -31,9 +32,10 @@ if not conditional:
     discriminator = Discriminator(input_size, hidden_dim)
 else:
     generator = ConditionalGenerator(z_dim, output_size, hidden_dim, num_classes, embedding_dim)
-    discriminator = ConditionalDiscriminator(input_size, hidden_dim, num_classes, embedding_dim)
+    # discriminator = ConditionalDiscriminator(input_size, hidden_dim, num_classes, embedding_dim)
+    discriminator = Discriminator(input_size, hidden_dim)
 # create trainer
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-trainer = Trainer(generator, discriminator, trainloader, testloader, device, epochs, lr, z_dim, sample_size, sample_path, model_path, conditional=conditional)
+trainer = Trainer(generator, discriminator, trainloader, testloader, device, epochs, lr, z_dim, sample_size, sample_path, model_path, conditional=conditional, g_per_d=g_per_d)
 # train model
 trainer.train()

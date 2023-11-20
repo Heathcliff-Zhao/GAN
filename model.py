@@ -14,7 +14,7 @@ class Generator(nn.Module):
         self.fc4 = nn.Linear(hidden_dim, output_size)
         self.dropout = nn.Dropout(0.3)
 
-    def forward(self, x):
+    def forward(self, x, placeholder=None):
         x = x.view(x.size(0), -1)
         x = self.dropout(F.leaky_relu(self.fc1(x), 0.2))
         x = self.dropout(F.leaky_relu(self.fc2(x), 0.2))
@@ -53,7 +53,7 @@ class Discriminator(nn.Module):
         self.fc3 = nn.Linear(hidden_dim, 1)
         self.dropout = nn.Dropout(0.3)
 
-    def forward(self, x):
+    def forward(self, x, placeholder=None):
         x = x.view(x.size(0), -1)
         x = self.dropout(F.leaky_relu(self.fc1(x), 0.2))
         x = self.dropout(F.leaky_relu(self.fc2(x), 0.2))
