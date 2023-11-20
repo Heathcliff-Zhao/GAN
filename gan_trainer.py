@@ -68,11 +68,8 @@ class Trainer():
 
     def save_image(self, epoch):
         z = torch.randn(self.sample_size, self.z_dim).to(self.device)
-        if not self.conditional:
-            fake_images = self.generator(z)
-        else:
-            labels = torch.randint(0, 10, (self.sample_size,)).to(self.device)
-            fake_images = self.generator(z, labels)
+        labels = torch.randint(0, 10, (self.sample_size,)).to(self.device)
+        fake_images = self.generator(z, labels)
         # fake_images = self.generator(z)
         fake_images = fake_images.view(fake_images.size(0), 1, 28, 28)
         save_image(fake_images, self.sample_path + '/fake_images-{}.png'.format(epoch), nrow=8)
