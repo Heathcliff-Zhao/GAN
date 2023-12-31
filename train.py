@@ -1,4 +1,4 @@
-from dataset import MNIST_dataset
+from dataset import get_dataloader
 from model import Generator, Discriminator, ConditionalGenerator, ConditionalDiscriminator
 from gan_trainer import Trainer
 import torch
@@ -8,34 +8,24 @@ args = argparse.ArgumentParser()
 args.add_argument('--conditional', action='store_true')
 args = args.parse_args()
 
-input_size = 784
-output_size = 784
-hidden_dim = 32
-z_dim = 100
-batch_size = 128
-num_classes = 10
-embedding_dim = 32
 epochs = 50
 lr = 0.0002
-sample_size = 64
-g_per_d = 3
-sample_path = './samples'
+sample_path = './samples2'
 model_path = './models'
 conditional = args.conditional
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # load dataset
-dataset = MNIST_dataset('./data', batch_size)
-trainloader, testloader = dataset.get_dataset()
+trainloader = get_dataloader()
 # create model
 if not conditional:
-    generator = Generator(z_dim, output_size, hidden_dim)
-    discriminator = Discriminator(input_size, hidden_dim)
+    generator = Generator()
+    discriminator = Discriminator()
 else:
-    generator = ConditionalGenerator(z_dim, output_size, hidden_dim, num_classes, embedding_dim)
+    generator = ConditionalGenerator()
     # discriminator = ConditionalDiscriminator(input_size, hidden_dim, num_classes, embedding_dim)
-    discriminator = Discriminator(input_size, hidden_dim)
+    discriminator = ConditionalDiscriminator()
 # create trainer
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-trainer = Trainer(generator, discriminator, trainloader, testloader, device, epochs, lr, z_dim, sample_size, sample_path, model_path, conditional=conditional, g_per_d=g_per_d)
+trainer = Trainer(generator.to(device), discriminator.to(device), trainloader, device, epochs, lr, sample_path, model_path, conditional)
 # train model
 trainer.train()
