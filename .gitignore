@@ -2,4 +2,5 @@ __pycache__/
 data/
 models_conditional/
 models_unconditional/
-./*.png
+*.png
+wandb/
