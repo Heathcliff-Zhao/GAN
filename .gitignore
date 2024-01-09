@@ -4,3 +4,4 @@ models_conditional/
 models_unconditional/
 *.png
 wandb/
+!logs/*.png
